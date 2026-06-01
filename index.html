@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario de Gratitud - Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border: 2px solid #000;
+            padding: 20px;
+        }
+
+        header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #999;
+            padding-bottom: 10px;
+        }
+
+        .date-display {
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .input-number {
+            display: inline-block;
+            width: 30px;
+            margin-left: 5px;
+            border: 1px solid #999;
+            padding: 2px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 2px solid #000;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            border-top: 2px solid #000;
+            padding-top: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #000;
+            background-color: white;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .entries-section {
+            border-top: 2px solid #000;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .entries-section h2 {
+            border-bottom: 1px solid #999;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .entry {
+            border: 1px solid #999;
+            padding: 15px;
+            margin-bottom: 12px;
+            background-color: #fafafa;
+        }
+
+        .entry-date {
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        .entry-item {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            border-left: 2px solid #ccc;
+        }
+
+        .entry-number {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .entry-text {
+            display: inline;
+            color: #333;
+        }
+
+        .delete-entry {
+            margin-top: 10px;
+            padding: 6px 12px;
+            font-size: 12px;
+            background-color: #fff0f0;
+            border: 1px solid #999;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            border: 1px dashed #999;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .nav-button {
+            padding: 8px 15px;
+            border: 1px solid #999;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>📔 Diario de Gratitud</h1>
+            <p style="margin-top: 10px; color: #666;">Registra tres pensamientos positivos cada día</p>
+            <div class="date-display">
+                Hoy: <span id="todayDate"></span>
+            </div>
+        </header>
+
+        <!-- FORM SECTION -->
+        <div class="form-section">
+            <div class="form-group">
+                <label>Pensamiento Positivo <span class="input-number">1</span></label>
+                <textarea id="gratitude1" placeholder="Escribe aquí tu primer pensamiento positivo..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Pensamiento Positivo <span class="input-number">2</span></label>
+                <textarea id="gratitude2" placeholder="Escribe aquí tu segundo pensamiento positivo..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Pensamiento Positivo <span class="input-number">3</span></label>
+                <textarea id="gratitude3" placeholder="Escribe aquí tu tercer pensamiento positivo..."></textarea>
+            </div>
+
+            <div class="buttons-group">
+                <button onclick="saveEntry()">💾 Guardar Entrada</button>
+                <button onclick="clearForm()">🗑️ Limpiar</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="navigation">
+            <button class="nav-button" onclick="previousDay()">← Día Anterior</button>
+            <button class="nav-button" onclick="todayPage()">Hoy</button>
+            <button class="nav-button" onclick="nextDay()">Día Siguiente →</button>
+        </div>
+
+        <!-- ENTRIES SECTION -->
+        <div class="entries-section">
+            <h2>Historial de Entradas</h2>
+            <div id="entriesList">
+                <div class="empty-state">No hay entradas registradas aún</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>Prototipo Wireframe - Diario de Gratitud</p>
+            <p>Los datos se guardan automáticamente en el navegador</p>
+        </div>
+    </div>
+
+    <script>
+        // Date management
+        let currentDate = new Date();
+
+        function getDateString(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatDateDisplay(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            return date.toLocaleDateString('es-ES', options);
+        }
+
+        // LocalStorage management
+        function getAllEntries() {
+            const stored = localStorage.getItem('gratitudeEntries');
+            return stored ? JSON.parse(stored) : {};
+        }
+
+        function getEntryForDate(dateStr) {
+            const entries = getAllEntries();
+            return entries[dateStr] || { gratitude1: '', gratitude2: '', gratitude3: '' };
+        }
+
+        function saveEntry() {
+            const dateStr = getDateString(currentDate);
+            const entries = getAllEntries();
+            
+            entries[dateStr] = {
+                gratitude1: document.getElementById('gratitude1').value,
+                gratitude2: document.getElementById('gratitude2').value,
+                gratitude3: document.getElementById('gratitude3').value
+            };
+
+            localStorage.setItem('gratitudeEntries', JSON.stringify(entries));
+            alert('✅ Entrada guardada correctamente');
+            loadEntriesDisplay();
+        }
+
+        function deleteEntry(dateStr) {
+            if (confirm(`¿Eliminar la entrada del ${formatDateDisplay(new Date(dateStr))}`)) {
+                const entries = getAllEntries();
+                delete entries[dateStr];
+                localStorage.setItem('gratitudeEntries', JSON.stringify(entries));
+                loadEntriesDisplay();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('gratitude1').value = '';
+            document.getElementById('gratitude2').value = '';
+            document.getElementById('gratitude3').value = '';
+        }
+
+        function loadFormForDate(date) {
+            currentDate = new Date(date);
+            const dateStr = getDateString(date);
+            const entry = getEntryForDate(dateStr);
+
+            document.getElementById('todayDate').textContent = formatDateDisplay(date);
+            document.getElementById('gratitude1').value = entry.gratitude1;
+            document.getElementById('gratitude2').value = entry.gratitude2;
+            document.getElementById('gratitude3').value = entry.gratitude3;
+        }
+
+        function loadEntriesDisplay() {
+            const entries = getAllEntries();
+            const entriesList = document.getElementById('entriesList');
+
+            if (Object.keys(entries).length === 0) {
+                entriesList.innerHTML = '<div class="empty-state">No hay entradas registradas aún</div>';
+                return;
+            }
+
+            const sortedDates = Object.keys(entries).sort().reverse();
+            entriesList.innerHTML = sortedDates.map(dateStr => {
+                const entry = entries[dateStr];
+                const date = new Date(dateStr + 'T00:00:00');
+                const hasContent = entry.gratitude1 || entry.gratitude2 || entry.gratitude3;
+
+                if (!hasContent) return '';
+
+                return `
+                    <div class="entry">
+                        <div class="entry-date">${formatDateDisplay(date)}</div>
+                        ${entry.gratitude1 ? `<div class="entry-item"><span class="entry-number">1.</span><span class="entry-text">${entry.gratitude1}</span></div>` : ''}
+                        ${entry.gratitude2 ? `<div class="entry-item"><span class="entry-number">2.</span><span class="entry-text">${entry.gratitude2}</span></div>` : ''}
+                        ${entry.gratitude3 ? `<div class="entry-item"><span class="entry-number">3.</span><span class="entry-text">${entry.gratitude3}</span></div>` : ''}
+                        <button class="delete-entry" onclick="deleteEntry('${dateStr}')">Eliminar entrada</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function previousDay() {
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() - 1);
+            loadFormForDate(newDate);
+        }
+
+        function nextDay() {
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() + 1);
+            loadFormForDate(newDate);
+        }
+
+        function todayPage() {
+            loadFormForDate(new Date());
+        }
+
+        // Initial load
+        loadFormForDate(new Date());
+        loadEntriesDisplay();
+    </script>
+</body>
+</html>
