@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadoras Financieras - FinCalc</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- XLSX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-gray-50">
+    <div id="app" class="flex h-screen bg-gray-50">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white shadow-lg fixed h-screen left-0 top-0 overflow-y-auto">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fas fa-calculator"></i> FinCalc
+                </h1>
+                <p class="text-blue-100 text-sm mt-2">Calculadoras Financieras</p>
+            </div>
+            
+            <nav class="mt-8">
+                <button class="nav-btn active w-full text-left px-6 py-4 hover:bg-blue-700 transition-colors flex items-center gap-3" data-calc="loan-personal">
+                    <i class="fas fa-credit-card w-5"></i>
+                    <span>Préstamo Consumo</span>
+                </button>
+                <button class="nav-btn w-full text-left px-6 py-4 hover:bg-blue-700 transition-colors flex items-center gap-3" data-calc="loan-mortgage">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Préstamo Hipotecario</span>
+                </button>
+                <button class="nav-btn w-full text-left px-6 py-4 hover:bg-blue-700 transition-colors flex items-center gap-3" data-calc="investment">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span>Cálculo Inversiones</span>
+                </button>
+            </nav>
+            
+            <div class="border-t border-blue-500 mt-8 pt-6 px-6">
+                <h3 class="text-sm font-semibold text-blue-100 mb-4">
+                    <i class="fas fa-history mr-2"></i>Historial
+                </h3>
+                <div id="history-list" class="space-y-2 max-h-64 overflow-y-auto">
+                    <!-- Dinámico -->
+                </div>
+                <button id="clear-history-btn" class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-2 rounded text-sm transition-colors">
+                    Limpiar Historial
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 p-8">
+            <div class="max-w-6xl mx-auto">
+                
+                <!-- Header -->
+                <div class="mb-8">
+                    <h2 id="page-title" class="text-4xl font-bold text-gray-800 mb-2">Préstamo Consumo</h2>
+                    <p id="page-description" class="text-gray-600">Calcula la cuota mensual y el total de intereses de tu préstamo</p>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-8">
+                    
+                    <!-- Left: Calculator Form -->
+                    <div class="col-span-2">
+                        <div class="bg-white rounded-lg shadow-lg p-8">
+                            
+                            <!-- Loan Personal Calculator -->
+                            <div id="loan-personal-form" class="calculator-form">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <!-- Monto -->
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Monto del Préstamo
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-lg font-bold text-gray-600">$</span>
+                                            <input type="number" class="input-field" id="lp-amount" placeholder="50,000" min="0" step="1000" value="50000">
+                                        </div>
+                                        <input type="range" class="input-range w-full mt-2" id="lp-amount-range" min="1000" max="500000" step="1000" value="50000">
+                                        <div class="text-xs text-gray-500 mt-1">Min: $1,000 | Max: $500,000</div>
+                                    </div>
+                                    
+                                    <!-- Tasa Interés -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Tasa de Interés Anual (%)
+                                        </label>
+                                        <input type="number" class="input-field" id="lp-interest" placeholder="12" min="0.1" max="100" step="0.1" value="12">
+                                        <input type="range" class="input-range w-full mt-2" id="lp-interest-range" min="0.1" max="50" step="0.1" value="12">
+                                    </div>
+                                    
+                                    <!-- Plazo -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Plazo (Meses)
+                                        </label>
+                                        <input type="number" class="input-field" id="lp-months" placeholder="24" min="1" max="360" step="1" value="24">
+                                        <input type="range" class="input-range w-full mt-2" id="lp-months-range" min="1" max="360" step="1" value="24">
+                                    </div>
+                                </div>
+                                
+                                <button id="lp-calculate-btn" class="btn-primary w-full mt-8">
+                                    <i class="fas fa-calculator mr-2"></i>Calcular
+                                </button>
+                            </div>
+                            
+                            <!-- Mortgage Loan Calculator -->
+                            <div id="loan-mortgage-form" class="calculator-form hidden">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <!-- Precio Propiedad -->
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Precio de la Propiedad
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-lg font-bold text-gray-600">$</span>
+                                            <input type="number" class="input-field" id="lm-price" placeholder="300,000" min="0" step="10000" value="300000">
+                                        </div>
+                                        <input type="range" class="input-range w-full mt-2" id="lm-price-range" min="50000" max="2000000" step="10000" value="300000">
+                                    </div>
+                                    
+                                    <!-- Cuota Inicial % -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Cuota Inicial (%)
+                                        </label>
+                                        <input type="number" class="input-field" id="lm-down-percent" placeholder="20" min="5" max="95" step="1" value="20">
+                                        <input type="range" class="input-range w-full mt-2" id="lm-down-percent-range" min="5" max="95" step="1" value="20">
+                                    </div>
+                                    
+                                    <!-- Tasa Interés Anual -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Tasa Interés Anual (%)
+                                        </label>
+                                        <input type="number" class="input-field" id="lm-interest" placeholder="5.5" min="0.1" max="20" step="0.1" value="5.5">
+                                        <input type="range" class="input-range w-full mt-2" id="lm-interest-range" min="0.1" max="20" step="0.1" value="5.5">
+                                    </div>
+                                    
+                                    <!-- Plazo Años -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Plazo (Años)
+                                        </label>
+                                        <input type="number" class="input-field" id="lm-years" placeholder="30" min="1" max="50" step="1" value="30">
+                                        <input type="range" class="input-range w-full mt-2" id="lm-years-range" min="1" max="50" step="1" value="30">
+                                    </div>
+                                </div>
+                                
+                                <button id="lm-calculate-btn" class="btn-primary w-full mt-8">
+                                    <i class="fas fa-calculator mr-2"></i>Calcular
+                                </button>
+                            </div>
+                            
+                            <!-- Investment Calculator -->
+                            <div id="investment-form" class="calculator-form hidden">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <!-- Capital Inicial -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Capital Inicial
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-lg font-bold text-gray-600">$</span>
+                                            <input type="number" class="input-field" id="inv-initial" placeholder="10,000" min="0" step="1000" value="10000">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Aporte Periódico -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Aporte Mensual
+                                        </label>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-lg font-bold text-gray-600">$</span>
+                                            <input type="number" class="input-field" id="inv-monthly" placeholder="500" min="0" step="100" value="500">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tasa Retorno Anual -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Tasa Retorno Anual (%)
+                                        </label>
+                                        <input type="number" class="input-field" id="inv-rate" placeholder="8" min="0.1" max="50" step="0.1" value="8">
+                                        <input type="range" class="input-range w-full mt-2" id="inv-rate-range" min="0.1" max="50" step="0.1" value="8">
+                                    </div>
+                                    
+                                    <!-- Plazo Años -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Plazo (Años)
+                                        </label>
+                                        <input type="number" class="input-field" id="inv-years" placeholder="10" min="1" max="50" step="1" value="10">
+                                        <input type="range" class="input-range w-full mt-2" id="inv-years-range" min="1" max="50" step="1" value="10">
+                                    </div>
+                                </div>
+                                
+                                <button id="inv-calculate-btn" class="btn-primary w-full mt-8">
+                                    <i class="fas fa-calculator mr-2"></i>Calcular
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Results & Chart -->
+                    <div class="col-span-1">
+                        <!-- Results Card -->
+                        <div id="results-card" class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>Resultados
+                            </h3>
+                            <div id="results-content" class="space-y-4">
+                                <p class="text-gray-500 text-center py-8">Ingresa los datos y presiona calcular</p>
+                            </div>
+                            
+                            <div id="export-buttons" class="hidden mt-6 space-y-2 border-t pt-4">
+                                <button id="export-pdf-btn" class="btn-secondary w-full text-sm">
+                                    <i class="fas fa-file-pdf mr-2"></i>Descargar PDF
+                                </button>
+                                <button id="export-excel-btn" class="btn-secondary w-full text-sm">
+                                    <i class="fas fa-file-excel mr-2"></i>Descargar Excel
+                                </button>
+                                <button id="save-to-history-btn" class="btn-secondary w-full text-sm">
+                                    <i class="fas fa-save mr-2"></i>Guardar en Historial
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart -->
+                        <div id="chart-container" class="bg-white rounded-lg shadow-lg p-6 hidden">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">
+                                <i class="fas fa-chart-bar text-blue-500 mr-2"></i>Visualización
+                            </h3>
+                            <canvas id="result-chart" style="max-height: 300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/calculators.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
